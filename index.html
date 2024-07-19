@@ -3,17 +3,38 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>A-Frame 3D Model Example</title>
+  <title>A-Frame AR.js Surface Detection Example</title>
+  <!-- Include A-Frame library -->
   <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+  <!-- Include AR.js library -->
+  <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js@master/aframe/build/aframe-ar.js"></script>
 </head>
-<body>
-  <a-scene>
-    <a-assets>
-      <a-asset-item id="tree-model" src="./Soldier.glb"></a-asset-item>
-    </a-assets>
-    <a-entity gltf-model="#tree-model" position="0 1 -5" scale="2 2 2"></a-entity>
+<body style="margin: 0; overflow: hidden;">
 
-    <a-entity camera position="0 1.6 0"></a-entity>
+    <a-scene embedded arjs="sourceType: webcam; debugUIEnabled: false;">
+
+    <a-assets>
+      <a-asset-item id="tree-model" src="path/to/your/model.gltf"></a-asset-item>
+    </a-assets>
+
+    <a-entity
+      id="tree"
+      gltf-model="#tree-model"
+      scale="0.5 0.5 0.5"
+      visible="false">
+    </a-entity>
+    <a-entity arjs-anchor="type: single; patternUrl: https://raw.githubusercontent.com/AR-js-org/AR.js/master/aframe/examples/marker-training/examples/pattern-files/pattern-hiro.patt;" emitevents="true">
+      <a-entity 
+        id="surface-model"
+        position="0 0 0"
+        scale="1 1 1"
+        rotation="0 0 0"
+        gltf-model="#tree-model"
+        visible="false">
+      </a-entity>
+    </a-entity>
+    <a-entity camera></a-entity>
   </a-scene>
+
 </body>
 </html>
