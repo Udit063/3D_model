@@ -13,15 +13,24 @@
       <a-asset-item id="my-model" src="Soldier.glb"></a-asset-item>
     </a-assets>
     
-    <a-entity
-      gltf-model="#my-model"
-      scale="1 1 1"
-      position="0 0 0"
-      rotation="0 0 0"
-      ar-hit-test="enabled: true;"
-    ></a-entity>
-    
+    <a-entity id="model" gltf-model="#my-model" scale="1 1 1" visible="false"></a-entity>
+
     <a-entity camera></a-entity>
   </a-scene>
+  
+  <script>
+    AFRAME.registerComponent('ar-hit-test-listener', {
+      init: function () {
+        const model = document.getElementById('model');
+        this.el.sceneEl.addEventListener('hit-test-select', function (event) {
+          const position = event.detail.position;
+          model.setAttribute('position', position);
+          model.setAttribute('visible', 'true');
+        });
+      }
+    });
+
+    document.querySelector('a-scene').setAttribute('ar-hit-test-listener', '');
+  </script>
 </body>
 </html>
