@@ -3,34 +3,28 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AR</title>
-  <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js@3.3.2/aframe/build/aframe-ar.js"></script>
+  <title>AR Plane Detection</title>
+  <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+  <script src="https://cdn.rawgit.com/AR-js-org/AR.js/3.3.2/aframe/build/aframe-ar-nft.min.js"></script>
 </head>
 <body style="margin: 0; overflow: hidden;">
-  <a-scene embedded arjs>
-    <a-assets>
-      <a-asset-item id="my-model" src="Soldier.glb"></a-asset-item>
-    </a-assets>
-    
-    <a-entity id="model" gltf-model="#my-model" scale="1 1 1" visible="false"></a-entity>
+  <a-scene vr-mode-ui="enabled: false" embedded arjs="sourceType: webcam; detectionMode: mono_and_matrix; matrixCodeType: 3x3;">
+    <a-camera gps-camera rotation-reader></a-camera>
 
-    <a-entity camera></a-entity>
+    <a-entity plane-detection></a-entity>
+
+]    <a-entity id="soldierModel" gltf-model="url(Soldier.glb)" scale="0.1 0.1 0.1" visible="false"></a-entity>
+
+    <script>
+      AFRAME.registerComponent('plane-detection', {
+        init: function () {
+          const model = document.getElementById('soldierModel');
+          this.el.sceneEl.addEventListener('markerFound', () => {
+            model.setAttribute('visible', true);
+          });
+        }
+      });
+    </script>
   </a-scene>
-  
-  <script>
-    AFRAME.registerComponent('ar-hit-test-listener', {
-      init: function () {
-        const model = document.getElementById('model');
-        this.el.sceneEl.addEventListener('hit-test-select', function (event) {
-          const position = event.detail.position;
-          model.setAttribute('position', position);
-          model.setAttribute('visible', 'true');
-        });
-      }
-    });
-
-    document.querySelector('a-scene').setAttribute('ar-hit-test-listener', '');
-  </script>
 </body>
 </html>
