@@ -17,46 +17,44 @@
       <a-asset-item id="avatarModel2" src="https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.2.5/examples/image-tracking/assets/band-example/raccoon/scene.gltf"></a-asset-item>
     </a-assets>
 
-    <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+    <a-camera id="camera" position="0 0 0" look-controls="enabled: false"></a-camera>
 
     <a-entity mindar-image-target="targetIndex: 0">
-      <a-entity id="model" gltf-model="#avatarModel" rotation="270 90 90" position="0 0 0.1" scale="0.5 0.5 0.5" 
-        animation="property: position; to: 0 0.1 0.1; dur: 1000; easing: easeInOutQuad; loop: true; dir: alternate">
-      </a-entity>
+      <a-gltf-model id="model" rotation="270 90 90" position="0 0 0.1" scale="0.5 0.5 0.5" src="#avatarModel"
+        animation="property: position; to: 0 0.1 0.1; dur: 1000; easing: easeInOutQuad; loop: true; dir: alternate"
+        gesture-handler>
+      </a-gltf-model>
     </a-entity>
 
     <a-entity mindar-image-target="targetIndex: 1">
-      <a-entity id="model2" gltf-model="#avatarModel2" rotation="0 0 0" position="0 0 0.1" scale="0.05 0.05 0.05" 
-        animation="property: position; to: 0 0.1 0.1; dur: 1000; easing: easeInOutQuad; loop: true; dir: alternate">
-      </a-entity>
+      <a-gltf-model id="model2" rotation="0 0 0" position="0 0 0.1" scale="0.05 0.05 0.05" src="#avatarModel2"
+        animation="property: position; to: 0 0.1 0.1; dur: 1000; easing: easeInOutQuad; loop: true; dir: alternate"
+        gesture-handler>
+      </a-gltf-model>
     </a-entity>
   </a-scene>
 
   <script>
     AFRAME.registerComponent('gesture-handler', {
       init: function () {
-        const scene = this.el.sceneEl;
-        const camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, 1000);
-        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        document.body.appendChild(renderer.domElement);
+        const sceneEl = this.el.sceneEl;
+        const camera = sceneEl.camera.el.getObject3D('camera');  // Get the camera object
 
-        const controls = new THREE.OrbitControls(camera, renderer.domElement);
+        // Initialize OrbitControls
+        const controls = new THREE.OrbitControls(camera, sceneEl.renderer.domElement);
         controls.enableDamping = true;
         controls.dampingFactor = 0.25;
-        controls.screenSpacePanning = false;
+        controls.screenSpacePanning = true;
         controls.maxPolarAngle = Math.PI / 2;
 
-        const model = scene.querySelector('#model').object3D;
-        const model2 = scene.querySelector('#model2').object3D;
-
-        const animate = function () {
-          requestAnimationFrame(animate);
-          controls.update();
-          renderer.render(scene.object3D, camera);
-        };
-
-        animate();
+        // Update function to ensure controls are updated with the render loop
+        sceneEl.addEventListener('renderstart', function () {
+          const animate = function () {
+            requestAnimationFrame(animate);
+            controls.update();
+          };
+          animate();
+        });
       }
     });
   </script>
