@@ -3,12 +3,10 @@
 <head>
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Image Based Tracking AR.js Demo with Three.js Controls</title>
+  <title>AR.js with Gesture Controls</title>
   <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
   <script src="https://unpkg.com/aframe-gesture-detector-component@3.1.0/dist/aframe-gesture-detector-component.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.142.0/build/three.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.142.0/examples/js/controls/OrbitControls.js"></script>
 </head>
 <body>
   <a-scene mindar-image="imageTargetSrc: https://udit063.github.io/3D_model/examples.mind" color-space="sRGB" renderer="colorManagement: true, physicallyCorrectLights" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
@@ -17,10 +15,10 @@
       <a-asset-item id="avatarModel2" src="https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.2.5/examples/image-tracking/assets/band-example/raccoon/scene.gltf"></a-asset-item>
     </a-assets>
 
-    <a-camera id="camera" position="0 0 0" look-controls="enabled: false"></a-camera>
+    <a-camera id="camera" position="0 0 0"></a-camera>
 
     <a-entity mindar-image-target="targetIndex: 0">
-      <a-entity id="modelWrapper">
+      <a-entity id="modelWrapper" gesture-handler zoomable>
         <a-gltf-model id="model" rotation="0 180 0" position="0 0 0.1" scale="0.4 0.4 0.4" src="#avatarModel"
           animation="property: position; to: 0 0.1 0.1; dur: 1000; easing: easeInOutQuad; loop: true; dir: alternate">
         </a-gltf-model>
@@ -28,7 +26,7 @@
     </a-entity>
 
     <a-entity mindar-image-target="targetIndex: 1">
-      <a-entity id="model2Wrapper">
+      <a-entity id="model2Wrapper" gesture-handler zoomable>
         <a-gltf-model id="model2" rotation="0 0 0" position="0 0 0.1" scale="0.05 0.05 0.05" src="#avatarModel2"
           animation="property: position; to: 0 0.1 0.1; dur: 1000; easing: easeInOutQuad; loop: true; dir: alternate">
         </a-gltf-model>
@@ -37,43 +35,26 @@
   </a-scene>
 
   <script>
-    let scene, camera, renderer, controls;
-
-    function init() {
-      scene = new THREE.Scene();
-
-      camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000);
-      camera.position.set(0, 1.6, 3);
-
-      renderer = new THREE.WebGLRenderer({ alpha: true });
-      renderer.setSize(window.innerWidth, window.innerHeight);
-      document.body.appendChild(renderer.domElement);
-
-      controls = new THREE.OrbitControls(camera, renderer.domElement);
-      controls.enableDamping = true;
-      controls.dampingFactor = 0.05;
-      controls.screenSpacePanning = false;
-      controls.maxPolarAngle = Math.PI / 2;
-
-      let light = new THREE.HemisphereLight(0xffffff, 0xbbbbff, 1);
-      scene.add(light);
-
-      let loader = new THREE.GLTFLoader();
-      loader.load('https://udit063.github.io/3D_model/Soldier.glb', function(gltf) {
-        let model = gltf.scene;
-        scene.add(model);
-        animate();
-      });
-    }
-
-    function animate() {
-      requestAnimationFrame(animate);
-      controls.update();
-      renderer.render(scene, camera);
-    }
-
-    init();
+    AFRAME.registerComponent('zoomable', {
+      schema: {
+        minScale: { type: 'number', default: 0.1 },
+        maxScale: { type: 'number', default: 2 }
+      },
+      init: function () {
+        this.scaleFactor = 1;
+        this.initialScale = this.el.object3D.scale.clone();
+        this.el.sceneEl.addEventListener('gesture-pinch-move', this.onPinch.bind(this));
+        this.el.sceneEl.addEventListener('gesture-rotate-move', this.onRotate.bind(this));
+      },
+      onPinch: function (event) {
+        const scale = this.scaleFactor * event.detail.scale;
+        const clampedScale = Math.min(Math.max(this.data.minScale, scale), this.data.maxScale);
+        this.el.object3D.scale.set(clampedScale, clampedScale, clampedScale);
+      },
+      onRotate: function (event) {
+        this.el.object3D.rotation.y += event.detail.rotation / 100; // Adjust rotation sensitivity
+      }
+    });
   </script>
 </body>
 </html>
-
