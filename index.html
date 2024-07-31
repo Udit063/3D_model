@@ -2,55 +2,53 @@
 <html>
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
-  <title>AR.js with Gesture Controls</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Image Based Tracking AR.js Demo with A-Frame</title>
   <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
   <script src="https://unpkg.com/aframe-gesture-detector-component@3.1.0/dist/aframe-gesture-detector-component.min.js"></script>
+  <script>
+    AFRAME.registerComponent('gesture-handler', {
+      init: function () {
+        this.el.addEventListener('gesture', (evt) => {
+          const gesture = evt.detail;
+          if (gesture.type === 'pinch') {
+            // Handle zoom in/out
+            const scale = Math.max(0.1, Math.min(3, gesture.scale));
+            this.el.object3D.scale.set(scale, scale, scale);
+          } else if (gesture.type === 'rotate') {
+            // Handle rotation
+            this.el.object3D.rotation.y += gesture.rotation;
+          }
+        });
+      }
+    });
+  </script>
 </head>
 <body>
-  <a-scene mindar-image="imageTargetSrc: https://udit063.github.io/3D_model/examples.mind" 
-           color-space="sRGB" 
-           renderer="colorManagement: true, physicallyCorrectLights" 
-           vr-mode-ui="enabled: false" 
-           device-orientation-permission-ui="enabled: true">
-    
+  <a-scene mindar-image="imageTargetSrc: https://udit063.github.io/3D_model/examples.mind" color-space="sRGB" renderer="colorManagement: true, physicallyCorrectLights" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
     <a-assets>
       <a-asset-item id="avatarModel" src="https://udit063.github.io/3D_model/Soldier.glb"></a-asset-item>
+      <a-asset-item id="avatarModel2" src="https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.2.5/examples/image-tracking/assets/band-example/raccoon/scene.gltf"></a-asset-item>
     </a-assets>
 
     <a-camera id="camera" position="0 0 0"></a-camera>
 
     <a-entity mindar-image-target="targetIndex: 0">
-      <a-entity id="modelWrapper" gesture-handler zoomable position="0 0 0.1" scale="0.2 0.2 0.2">
-        <a-gltf-model id="model" rotation="0 180 0" src="#avatarModel"
+      <a-entity id="modelWrapper" gesture-handler>
+        <a-gltf-model id="model" rotation="0 180 0" position="0 0 0.1" scale="0.4 0.4 0.4" src="#avatarModel"
+          animation="property: position; to: 0 0.1 0.1; dur: 1000; easing: easeInOutQuad; loop: true; dir: alternate">
+        </a-gltf-model>
+      </a-entity>
+    </a-entity>
+
+    <a-entity mindar-image-target="targetIndex: 1">
+      <a-entity id="model2Wrapper" gesture-handler>
+        <a-gltf-model id="model2" rotation="0 0 0" position="0 0 0.1" scale="0.05 0.05 0.05" src="#avatarModel2"
           animation="property: position; to: 0 0.1 0.1; dur: 1000; easing: easeInOutQuad; loop: true; dir: alternate">
         </a-gltf-model>
       </a-entity>
     </a-entity>
   </a-scene>
-
-  <script>
-    AFRAME.registerComponent('zoomable', {
-      schema: {
-        minScale: { type: 'number', default: 0.1 },
-        maxScale: { type: 'number', default: 1 }
-      },
-      init: function () {
-        this.scaleFactor = 1;
-        this.el.object3D.scale.set(this.data.minScale, this.data.minScale, this.data.minScale);
-        this.el.sceneEl.addEventListener('gesture-pinch-move', this.onPinch.bind(this));
-        this.el.sceneEl.addEventListener('gesture-rotate-move', this.onRotate.bind(this));
-      },
-      onPinch: function (event) {
-        const scale = this.scaleFactor * event.detail.scale;
-        const clampedScale = Math.min(Math.max(this.data.minScale, scale), this.data.maxScale);
-        this.el.object3D.scale.set(clampedScale, clampedScale, clampedScale);
-      },
-      onRotate: function (event) {
-        this.el.object3D.rotation.y += event.detail.rotation / 100; // Adjust rotation sensitivity
-      }
-    });
-  </script>
 </body>
 </html>
