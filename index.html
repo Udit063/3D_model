@@ -19,11 +19,11 @@
       <a-asset-item id="avatarModel" src="https://udit063.github.io/3D_model/Soldier.glb"></a-asset-item>
     </a-assets>
 
-    <a-camera id="camera"></a-camera>
+    <a-camera id="camera" position="0 0 0"></a-camera>
 
     <a-entity mindar-image-target="targetIndex: 0">
-      <a-entity id="modelWrapper" gesture-handler zoomable>
-        <a-gltf-model id="model" rotation="0 180 0" position="0 0 0.1" scale="0.4 0.4 0.4" src="#avatarModel"
+      <a-entity id="modelWrapper" gesture-handler zoomable position="0 0 0.1" scale="0.2 0.2 0.2">
+        <a-gltf-model id="model" rotation="0 180 0" src="#avatarModel"
           animation="property: position; to: 0 0.1 0.1; dur: 1000; easing: easeInOutQuad; loop: true; dir: alternate">
         </a-gltf-model>
       </a-entity>
@@ -34,11 +34,11 @@
     AFRAME.registerComponent('zoomable', {
       schema: {
         minScale: { type: 'number', default: 0.1 },
-        maxScale: { type: 'number', default: 2 }
+        maxScale: { type: 'number', default: 1 }
       },
       init: function () {
         this.scaleFactor = 1;
-        this.initialScale = this.el.object3D.scale.clone();
+        this.el.object3D.scale.set(this.data.minScale, this.data.minScale, this.data.minScale);
         this.el.sceneEl.addEventListener('gesture-pinch-move', this.onPinch.bind(this));
         this.el.sceneEl.addEventListener('gesture-rotate-move', this.onRotate.bind(this));
       },
