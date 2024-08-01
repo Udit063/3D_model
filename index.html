@@ -7,6 +7,37 @@
   <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
   <script src="https://unpkg.com/aframe-gesture-detector-component@3.1.0/dist/aframe-gesture-detector-component.min.js"></script>
+  <script>
+    AFRAME.registerComponent('gesture-handler', {
+      schema: {
+        rotationFactor: {type: 'number', default: 5},
+        minScale: {type: 'number', default: 0.3},
+        maxScale: {type: 'number', default: 8}
+      },
+      init: function () {
+        this.initialRotation = this.el.object3D.rotation.clone();
+        this.handleScale = this.handleScale.bind(this);
+        this.handleRotation = this.handleRotation.bind(this);
+        this.el.sceneEl.addEventListener('pinchmove', this.handleScale);
+        this.el.sceneEl.addEventListener('rotatemove', this.handleRotation);
+      },
+      remove: function () {
+        this.el.sceneEl.removeEventListener('pinchmove', this.handleScale);
+        this.el.sceneEl.removeEventListener('rotatemove', this.handleRotation);
+      },
+      handleRotation: function (event) {
+        // Adjusting rotation on its local axis
+        this.el.object3D.rotation.x = this.initialRotation.x + THREE.Math.degToRad(event.detail.rotation * this.data.rotationFactor);
+        this.el.object3D.rotation.y = this.initialRotation.y + THREE.Math.degToRad(event.detail.rotation * this.data.rotationFactor);
+        this.el.object3D.rotation.z = this.initialRotation.z + THREE.Math.degToRad(event.detail.rotation * this.data.rotationFactor);
+      },
+      handleScale: function (event) {
+        let scale = this.el.object3D.scale.x * (1 + event.detail.scale - event.detail.previousScale);
+        scale = Math.min(Math.max(scale, this.data.minScale), this.data.maxScale);
+        this.el.object3D.scale.set(scale, scale, scale);
+      }
+    });
+  </script>
 </head>
 <body>
   <a-scene mindar-image="imageTargetSrc: https://udit063.github.io/3D_model/examples.mind" color-space="sRGB" renderer="colorManagement: true, physicallyCorrectLights" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
