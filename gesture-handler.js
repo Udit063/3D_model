@@ -14,13 +14,15 @@ AFRAME.registerComponent("gesture-handler", {
     this.initialScale = this.el.object3D.scale.clone();
     this.scaleFactor = 1;
 
-    // Use MindAR-specific events
+    // MindAR-specific events for visibility
     this.el.addEventListener("imageFound", () => {
       this.isVisible = true;
+      console.log('Image found, model visible');
     });
 
     this.el.addEventListener("imageLost", () => {
       this.isVisible = false;
+      console.log('Image lost, model not visible');
     });
   },
 
@@ -28,9 +30,11 @@ AFRAME.registerComponent("gesture-handler", {
     if (this.data.enabled) {
       this.el.sceneEl.addEventListener("onefingermove", this.handleRotation);
       this.el.sceneEl.addEventListener("twofingermove", this.handleScale);
+      console.log('Gesture handling enabled');
     } else {
       this.el.sceneEl.removeEventListener("onefingermove", this.handleRotation);
       this.el.sceneEl.removeEventListener("twofingermove", this.handleScale);
+      console.log('Gesture handling disabled');
     }
   },
 
@@ -41,6 +45,7 @@ AFRAME.registerComponent("gesture-handler", {
 
   handleRotation: function (event) {
     if (this.isVisible) {
+      console.log('Handling rotation:', event.detail.positionChange);
       this.el.object3D.rotation.y +=
         event.detail.positionChange.x * this.data.rotationFactor;
       this.el.object3D.rotation.x +=
@@ -50,6 +55,7 @@ AFRAME.registerComponent("gesture-handler", {
 
   handleScale: function (event) {
     if (this.isVisible) {
+      console.log('Handling scale:', event.detail.spreadChange);
       this.scaleFactor *=
         1 + event.detail.spreadChange / event.detail.startSpread;
 
