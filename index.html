@@ -7,16 +7,19 @@
   <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.142.0/build/three.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/aframe-gesture-detector-component@3.1.0/dist/aframe-gesture-detector-component.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.142.0/examples/js/controls/OrbitControls.js"></script>
+  <script src="https://unpkg.com/aframe-gesture-detector-component@3.1.0/dist/aframe-gesture-detector-component.min.js"></script>
 </head>
 <body>
-  <a-scene mindar-image="imageTargetSrc: https://udit063.github.io/3D_model/examples.mind" color-space="sRGB" renderer="colorManagement: true, physicallyCorrectLights" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
+  <a-scene mindar-image="imageTargetSrc: https://udit063.github.io/3D_model/examples.mind" color-space="sRGB" renderer="colorManagement: true, physicallyCorrectLights" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false" embedded>
     <a-assets>
       <a-asset-item id="avatarModel" src="https://udit063.github.io/3D_model/Soldier.glb"></a-asset-item>
       <a-asset-item id="avatarModel2" src="https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.2.5/examples/image-tracking/assets/band-example/raccoon/scene.gltf"></a-asset-item>
     </a-assets>
 
-    <a-camera id="camera" position="0 0 0" look-controls="enabled: false"></a-camera>
+    <a-entity id="cameraRig">
+      <a-camera id="camera" position="0 0 5" look-controls="enabled: false"></a-camera>
+    </a-entity>
 
     <a-entity mindar-image-target="targetIndex: 0">
       <a-entity id="modelWrapper" gesture-handler>
@@ -36,18 +39,19 @@
   </a-scene>
 
   <script>
-    document.querySelectorAll('[gesture-handler]').forEach(el => {
-      el.addEventListener('rotationchanged', (event) => {
-        const rotation = event.detail.rotation;
-        const model = el.querySelector('a-gltf-model');
-        model.object3D.rotation.y += rotation.x * 2; 
-      });
+    const scene = document.querySelector('a-scene').object3D;
+    const camera = document.getElementById('camera').object3D;
+    const controls = new THREE.OrbitControls(camera.children[0], document.querySelector('a-scene').renderer.domElement);
+    
+    controls.target.set(0, 0, 0); 
+    controls.enableDamping = true; 
+    controls.dampingFactor = 0.05; 
+    controls.rotateSpeed = 0.1;
+    controls.screenSpacePanning = false;
+    controls.maxPolarAngle = Math.PI / 2; 
 
-      el.addEventListener('scalechanged', (event) => {
-        const scale = event.detail.scale;
-        const model = el.querySelector('a-gltf-model');
-        model.object3D.scale.set(scale.x, scale.y, scale.z);
-      });
+    document.querySelector('a-scene').addEventListener('renderstart', () => {
+      controls.update();
     });
   </script>
 </body>
