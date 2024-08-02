@@ -3,41 +3,11 @@
 <head>
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Image Based Tracking AR.js Demo with A-Frame</title>
+  <title>Image Based Tracking AR.js Demo with Three.js Controls</title>
   <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
-  <script src="https://unpkg.com/aframe-gesture-detector-component@3.1.0/dist/aframe-gesture-detector-component.min.js"></script>
-  <script>
-    AFRAME.registerComponent('gesture-handler', {
-      schema: {
-        rotationFactor: {type: 'number', default: 5},
-        minScale: {type: 'number', default: 0.3},
-        maxScale: {type: 'number', default: 8}
-      },
-      init: function () {
-        this.initialRotation = this.el.object3D.rotation.clone();
-        this.handleScale = this.handleScale.bind(this);
-        this.handleRotation = this.handleRotation.bind(this);
-        this.el.sceneEl.addEventListener('pinchmove', this.handleScale);
-        this.el.sceneEl.addEventListener('rotatemove', this.handleRotation);
-      },
-      remove: function () {
-        this.el.sceneEl.removeEventListener('pinchmove', this.handleScale);
-        this.el.sceneEl.removeEventListener('rotatemove', this.handleRotation);
-      },
-      handleRotation: function (event) {
-        // Adjusting rotation on its local axis
-        this.el.object3D.rotation.x = this.initialRotation.x + THREE.Math.degToRad(event.detail.rotation * this.data.rotationFactor);
-        this.el.object3D.rotation.y = this.initialRotation.y + THREE.Math.degToRad(event.detail.rotation * this.data.rotationFactor);
-        this.el.object3D.rotation.z = this.initialRotation.z + THREE.Math.degToRad(event.detail.rotation * this.data.rotationFactor);
-      },
-      handleScale: function (event) {
-        let scale = this.el.object3D.scale.x * (1 + event.detail.scale - event.detail.previousScale);
-        scale = Math.min(Math.max(scale, this.data.minScale), this.data.maxScale);
-        this.el.object3D.scale.set(scale, scale, scale);
-      }
-    });
-  </script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.142.0/build/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/aframe-gesture-detector-component@3.1.0/dist/aframe-gesture-detector-component.min.js"></script>
 </head>
 <body>
   <a-scene mindar-image="imageTargetSrc: https://udit063.github.io/3D_model/examples.mind" color-space="sRGB" renderer="colorManagement: true, physicallyCorrectLights" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
@@ -46,7 +16,7 @@
       <a-asset-item id="avatarModel2" src="https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.2.5/examples/image-tracking/assets/band-example/raccoon/scene.gltf"></a-asset-item>
     </a-assets>
 
-    <a-camera id="camera" position="0 0 0"></a-camera>
+    <a-camera id="camera" position="0 0 0" look-controls="enabled: false"></a-camera>
 
     <a-entity mindar-image-target="targetIndex: 0">
       <a-entity id="modelWrapper" gesture-handler>
@@ -64,5 +34,21 @@
       </a-entity>
     </a-entity>
   </a-scene>
+
+  <script>
+    document.querySelectorAll('[gesture-handler]').forEach(el => {
+      el.addEventListener('rotationchanged', (event) => {
+        const rotation = event.detail.rotation;
+        const model = el.querySelector('a-gltf-model');
+        model.object3D.rotation.y += rotation.x * 2; 
+      });
+
+      el.addEventListener('scalechanged', (event) => {
+        const scale = event.detail.scale;
+        const model = el.querySelector('a-gltf-model');
+        model.object3D.scale.set(scale.x, scale.y, scale.z);
+      });
+    });
+  </script>
 </body>
 </html>
