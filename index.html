@@ -108,8 +108,8 @@
           const deltaX = event.touches[0].clientX - this.lastRotationX;
           const deltaY = event.touches[0].clientY - this.lastRotationY;
 
-          this.el.object3D.rotation.y += deltaX * rotationFactor * 0.01;
-          this.el.object3D.rotation.x += deltaY * rotationFactor * 0.01;
+          this.el.object3D.rotation.y += deltaX * rotationFactor * 0.1;
+          this.el.object3D.rotation.x += deltaY * rotationFactor * 0.1;
 
           this.lastRotationX = event.touches[0].clientX;
           this.lastRotationY = event.touches[0].clientY;
