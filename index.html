@@ -1,143 +1,3 @@
-<!-- <!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Image Based Tracking AR.js Demo with Three.js Controls</title>
-  <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.142.0/build/three.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/aframe-gesture-detector-component@3.1.0/dist/aframe-gesture-detector-component.min.js"></script>
-  <style>:-webkit-full-screen {
-    background-color: transparent;
-    }
-    
-    .a-hidden {
-    display: none !important;
-    }
-    
-    .a-canvas {
-    height: 100%;
-    left: 0;
-    position: absolute;
-    top: 0;
-    width: 100%;
-    }
-    
-    .a-canvas.a-grab-cursor:hover {
-    cursor: grab;
-    cursor: -moz-grab;
-    cursor: -webkit-grab;
-    }</style>
-</head>
-<body>
-  <a-scene id="scene" mindar-image="imageTargetSrc: https://udit063.github.io/3D_model/examples.mind" color-space="sRGB" renderer="colorManagement: true, physicallyCorrectLights" vr-mode-ui="enabled: false" gesture-detector device-orientation-permission-ui="enabled: false">
-    <a-assets>
-      <a-asset-item id="avatarModel" src="https://udit063.github.io/3D_model/Soldier.glb"></a-asset-item>
-      <a-asset-item id="avatarModel2" src="https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.2.5/examples/image-tracking/assets/band-example/raccoon/scene.gltf"></a-asset-item>
-    </a-assets>
-
-    <a-camera id="camera" position="0 0 0" look-controls="enabled: false"></a-camera>
-
-    <a-entity mindar-image-target="targetIndex: 0">
-      <a-entity id="modelWrapper" class="clickable" gesture-handler>
-        <a-gltf-model id="model" rotation="0 180 0" position="0 0 0.1" scale="1 1 1" src="#avatarModel"
-          animation="property: position; to: 0 0.1 0.1; dur: 1000; easing: easeInOutQuad; loop: true; dir: alternate">
-        </a-gltf-model>
-      </a-entity>
-    </a-entity>
-
-    <a-entity mindar-image-target="targetIndex: 1">
-      <a-entity id="model2Wrapper" class="clickable" gesture-handler>
-        <a-gltf-model id="model2" rotation="0 0 0" position="0 0 0.1" scale="0.05 0.05 0.05" src="#avatarModel2"
-          animation="property: position; to: 0 0.1 0.1; dur: 1000; easing: easeInOutQuad; loop: true; dir: alternate">
-        </a-gltf-model>
-      </a-entity>
-    </a-entity>
-  </a-scene>
-
-   <script>
-      AFRAME.registerComponent('gesture-handler', {
-        schema: {
-          rotationFactor: {default: 5},
-          minScale: {default: 0.3},
-          maxScale: {default: 8}
-        },
-        init: function () {
-          this.initialDistance = 0;
-          this.initialRotation = null;
-          this.lastRotationX = 0;
-          this.lastRotationY = 0;
-          this.handleTouchMove = this.handleTouchMove.bind(this);
-          this.handleTouchStart = this.handleTouchStart.bind(this);
-          this.handleTouchEnd = this.handleTouchEnd.bind(this);
-
-          this.el.sceneEl.canvas.addEventListener('touchmove', this.handleTouchMove);
-          this.el.sceneEl.canvas.addEventListener('touchstart', this.handleTouchStart);
-          this.el.sceneEl.canvas.addEventListener('touchend', this.handleTouchEnd);
-        },
-        remove: function () {
-          this.el.sceneEl.canvas.removeEventListener('touchmove', this.handleTouchMove);
-          this.el.sceneEl.canvas.removeEventListener('touchstart', this.handleTouchStart);
-          this.el.sceneEl.canvas.removeEventListener('touchend', this.handleTouchEnd);
-        },
-        handleTouchMove: function (event) {
-          if (event.touches.length == 1) {
-            this.handleRotation(event);
-          } else if (event.touches.length == 2) {
-            this.handlePinch(event);
-          }
-        },
-        handleRotation: function (event) {
-          const rotationFactor = this.data.rotationFactor;
-          const deltaX = event.touches[0].clientX - this.lastRotationX;
-          const deltaY = event.touches[0].clientY - this.lastRotationY;
-
-          this.el.object3D.rotation.y += deltaX * rotationFactor * 0.01;
-          this.el.object3D.rotation.x += deltaY * rotationFactor * 0.01;
-
-          this.lastRotationX = event.touches[0].clientX;
-          this.lastRotationY = event.touches[0].clientY;
-        },
-        handlePinch: function (event) {
-          const dx = event.touches[0].clientX - event.touches[1].clientX;
-          const dy = event.touches[0].clientY - event.touches[1].clientY;
-          const distance = Math.sqrt(dx * dx + dy * dy);
-
-          if (!this.initialDistance) {
-            this.initialDistance = distance;
-          } else {
-            const scaleFactor = distance / this.initialDistance;
-            const newScale = Math.min(Math.max(this.el.object3D.scale.x * scaleFactor, this.data.minScale), this.data.maxScale);
-            this.el.object3D.scale.set(newScale, newScale, newScale);
-            this.initialDistance = distance;
-          }
-        },
-        handleTouchStart: function (event) {
-          if (event.touches.length === 1) {
-            this.lastRotationX = event.touches[0].clientX;
-            this.lastRotationY = event.touches[0].clientY;
-          } else if (event.touches.length === 2) {
-            this.initialDistance = null;
-          }
-        },
-        handleTouchEnd: function () {
-          this.initialDistance = null;
-        }
-      });
-
-      document.querySelector('#model').setAttribute('gesture-handler', '');
-    </script>
-    
-  <canvas class="a-canvas" data-aframe-canvas="true" data-engine="three.js r158" width="1920" height="321"></canvas><div class="a-loader-title" style="display: none;"></div><div class="a-enter-vr fullscreen" aframe-injected=""><button class="a-enter-vr-button" title="Enter VR mode with a headset or fullscreen without" aframe-injected=""></button></div><div class="a-orientation-modal a-hidden" aframe-injected=""><button aframe-injected="">Exit VR</button></div><a-entity light="" data-aframe-default-light="" aframe-injected=""></a-entity><a-entity light="" position="" data-aframe-default-light="" aframe-injected=""></a-entity></a-scene>
-
-<div class="mindar-ui-overlay mindar-ui-loading hidden">
-<div class="loader">
-</div></div>
-  </script>
-</body>
-</html> -->
-
 <html class="a-fullscreen"><head>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -188,14 +48,25 @@
   <a-scene mindar-image="imageTargetSrc: https://udit063.github.io/3D_model/examples.mind;" color-space="sRGB" renderer="colorManagement: true, physicallyCorrectLights" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false" gesture-detector="" inspector="" keyboard-shortcuts="" screenshot="" xr-mode-ui="">
     
     <a-assets>
-      <a-asset-item id="bearModel" src="./Soldier.glb"></a-asset-item>
+      <a-asset-item id="avatarModel" src="https://udit063.github.io/3D_model/Soldier.glb"></a-asset-item>
+      <a-asset-item id="avatarModel2" src="https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.2.5/examples/image-tracking/assets/band-example/raccoon/scene.gltf"></a-asset-item>
     </a-assets>
 
     <a-camera position="0 0 0" rotation="0 0 0" look-controls="enabled: false" camera="" wasd-controls=""></a-camera>
 
-    <a-entity id="targetOne" mindar-image-target="targetIndex: 0">
-      <a-entity id="model" rotation="0 0 0" position="0 -0.25 0" scale="1.5 1.5 1.5" gesture-handler="">
-        <a-gltf-model src="#bearModel" rotation-controls="" animation-mixer="" gltf-model=""></a-gltf-model>
+    <a-entity mindar-image-target="targetIndex: 0">
+      <a-entity id="targetOne" class="clickable" gesture-handler>
+        <a-gltf-model id="model" rotation="0 180 0" position="0 0 0.1" scale="1 1 1" src="#avatarModel"
+          animation="property: position; to: 0 0.1 0.1; dur: 1000; easing: easeInOutQuad; loop: true; dir: alternate">
+        </a-gltf-model>
+      </a-entity>
+    </a-entity>
+
+    <a-entity mindar-image-target="targetIndex: 1">
+      <a-entity id="targetTwo" class="clickable" gesture-handler>
+        <a-gltf-model id="model2" rotation="0 0 0" position="0 0 0.1" scale="0.05 0.05 0.05" src="#avatarModel2"
+          animation="property: position; to: 0 0.1 0.1; dur: 1000; easing: easeInOutQuad; loop: true; dir: alternate">
+        </a-gltf-model>
       </a-entity>
     </a-entity>
     
