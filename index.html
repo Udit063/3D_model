@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html>
 <head>
   <meta charset="utf-8" />
@@ -8,6 +8,27 @@
   <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.142.0/build/three.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/aframe-gesture-detector-component@3.1.0/dist/aframe-gesture-detector-component.min.js"></script>
+  <style>:-webkit-full-screen {
+    background-color: transparent;
+    }
+    
+    .a-hidden {
+    display: none !important;
+    }
+    
+    .a-canvas {
+    height: 100%;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    }
+    
+    .a-canvas.a-grab-cursor:hover {
+    cursor: grab;
+    cursor: -moz-grab;
+    cursor: -webkit-grab;
+    }</style>
 </head>
 <body>
   <a-scene id="scene" mindar-image="imageTargetSrc: https://udit063.github.io/3D_model/examples.mind" color-space="sRGB" renderer="colorManagement: true, physicallyCorrectLights" vr-mode-ui="enabled: false" gesture-detector device-orientation-permission-ui="enabled: false">
@@ -115,4 +136,147 @@
 </div></div>
   </script>
 </body>
-</html>
+</html> -->
+
+<html class="a-fullscreen"><head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <meta aframe-injected="" name="mobile-web-app-capable" content="yes"><meta aframe-injected="" name="theme-color" content="black"><script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script><style>/* .a-fullscreen means not embedded. */
+
+
+</style>  <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.1.5/dist/mindar-image.prod.js"></script><style>.mindar-ui-overlay{display:flex;align-items:center;justify-content:center;position:absolute;left:0;right:0;top:0;bottom:0;background:rgba(0,0,0,0);z-index:2}.mindar-ui-overlay.hidden{display:none}.mindar-ui-loading .loader{border:16px solid #222;border-top:16px solid #fff;opacity:.8;border-radius:50%;width:120px;height:120px;animation:spin 2s linear infinite}@keyframes spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}.mindar-ui-compatibility .content{background:#000;color:#fff;opacity:.8;text-align:center;margin:20px;padding:20px;min-height:50vh}@media(min-aspect-ratio: 1/1){.mindar-ui-scanning .scanning{width:50vh;height:50vh}}@media(max-aspect-ratio: 1/1){.mindar-ui-scanning .scanning{width:80vw;height:80vw}}.mindar-ui-scanning .scanning .inner{position:relative;width:100%;height:100%;opacity:.8;background:linear-gradient(to right, white 10px, transparent 10px) 0 0,linear-gradient(to right, white 10px, transparent 10px) 0 100%,linear-gradient(to left, white 10px, transparent 10px) 100% 0,linear-gradient(to left, white 10px, transparent 10px) 100% 100%,linear-gradient(to bottom, white 10px, transparent 10px) 0 0,linear-gradient(to bottom, white 10px, transparent 10px) 100% 0,linear-gradient(to top, white 10px, transparent 10px) 0 100%,linear-gradient(to top, white 10px, transparent 10px) 100% 100%;background-repeat:no-repeat;background-size:40px 40px}.mindar-ui-scanning .scanning .inner .scanline{position:absolute;width:100%;height:10px;background:#fff;animation:move 2s linear infinite}@keyframes move{0%,100%{top:0%}50%{top:calc(100% - 10px)}}</style>
+  <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v7.0.0/dist/aframe-extras.min.js"></script>
+
+  <style>
+       body { margin: 0; }
+       a-scene { width: 100vw; height: 100vh; }
+    .audioBox{
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 9;
+    }
+  </style>
+<style>.mindar-ui-overlay{display:flex;align-items:center;justify-content:center;position:absolute;left:0;right:0;top:0;bottom:0;background:transparent;z-index:2}.mindar-ui-overlay.hidden{display:none}.mindar-ui-loading .loader{border:16px solid #222;border-top:16px solid white;opacity:.8;border-radius:50%;width:120px;height:120px;animation:spin 2s linear infinite}@keyframes spin{0%{transform:rotate(0)}to{transform:rotate(360deg)}}.mindar-ui-compatibility .content{background:black;color:#fff;opacity:.8;text-align:center;margin:20px;padding:20px;min-height:50vh}@media (min-aspect-ratio: 1/1){.mindar-ui-scanning .scanning{width:50vh;height:50vh}}@media (max-aspect-ratio: 1/1){.mindar-ui-scanning .scanning{width:80vw;height:80vw}}.mindar-ui-scanning .scanning .inner{position:relative;width:100%;height:100%;opacity:.8;background:linear-gradient(to right,white 10px,transparent 10px) 0 0,linear-gradient(to right,white 10px,transparent 10px) 0 100%,linear-gradient(to left,white 10px,transparent 10px) 100% 0,linear-gradient(to left,white 10px,transparent 10px) 100% 100%,linear-gradient(to bottom,white 10px,transparent 10px) 0 0,linear-gradient(to bottom,white 10px,transparent 10px) 100% 0,linear-gradient(to top,white 10px,transparent 10px) 0 100%,linear-gradient(to top,white 10px,transparent 10px) 100% 100%;background-repeat:no-repeat;background-size:40px 40px}.mindar-ui-scanning .scanning .inner .scanline{position:absolute;width:100%;height:10px;background:white;animation:move 2s linear infinite}@keyframes move{0%,to{top:0%}50%{top:calc(100% - 10px)}}</style></head>
+<body cz-shortcut-listen="true">
+
+  <div class="audioBox">
+    <audio id="correctAudio">
+        <source src="" type="audio/mpeg">
+    </audio>
+    <audio id="bgAudio" loop="">
+        <source src="" type="audio/mpeg">
+    </audio>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+    const sceneEl = document.querySelector('a-scene');
+    let arSystem;
+
+      sceneEl.addEventListener('loaded', function () {
+        arSystem = sceneEl.systems["mindar-image-system"];
+      });
+
+      const exampleTargetOne = document.querySelector('#targetOne');
+      const exampleTargetTwo = document.querySelector('#targetTwo');        
+      });
+
+  </script>
+
+  <a-scene mindar-image="imageTargetSrc: https://udit063.github.io/3D_model/examples.mind;" color-space="sRGB" renderer="colorManagement: true, physicallyCorrectLights" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false" gesture-detector="" inspector="" keyboard-shortcuts="" screenshot="" xr-mode-ui="">
+    
+    <a-assets>
+      <a-asset-item id="bearModel" src="./Soldier.glb"></a-asset-item>
+    </a-assets>
+
+    <a-camera position="0 0 0" rotation="0 0 0" look-controls="enabled: false" camera="" wasd-controls=""></a-camera>
+
+    <a-entity id="targetOne" mindar-image-target="targetIndex: 0">
+      <a-entity id="model" rotation="0 0 0" position="0 -0.25 0" scale="1.5 1.5 1.5" gesture-handler="">
+        <a-gltf-model src="#bearModel" rotation-controls="" animation-mixer="" gltf-model=""></a-gltf-model>
+      </a-entity>
+    </a-entity>
+    
+
+    <script>
+      AFRAME.registerComponent('gesture-handler', {
+        schema: {
+          rotationFactor: {default: 5},
+          minScale: {default: 0.3},
+          maxScale: {default: 8}
+        },
+        init: function () {
+          this.initialDistance = 0;
+          this.initialRotation = null;
+          this.lastRotationX = 0;
+          this.lastRotationY = 0;
+          this.handleTouchMove = this.handleTouchMove.bind(this);
+          this.handleTouchStart = this.handleTouchStart.bind(this);
+          this.handleTouchEnd = this.handleTouchEnd.bind(this);
+
+          this.el.sceneEl.canvas.addEventListener('touchmove', this.handleTouchMove);
+          this.el.sceneEl.canvas.addEventListener('touchstart', this.handleTouchStart);
+          this.el.sceneEl.canvas.addEventListener('touchend', this.handleTouchEnd);
+        },
+        remove: function () {
+          this.el.sceneEl.canvas.removeEventListener('touchmove', this.handleTouchMove);
+          this.el.sceneEl.canvas.removeEventListener('touchstart', this.handleTouchStart);
+          this.el.sceneEl.canvas.removeEventListener('touchend', this.handleTouchEnd);
+        },
+        handleTouchMove: function (event) {
+          if (event.touches.length == 1) {
+            this.handleRotation(event);
+          } else if (event.touches.length == 2) {
+            this.handlePinch(event);
+          }
+        },
+        handleRotation: function (event) {
+          const rotationFactor = this.data.rotationFactor;
+          const deltaX = event.touches[0].clientX - this.lastRotationX;
+          const deltaY = event.touches[0].clientY - this.lastRotationY;
+
+          this.el.object3D.rotation.y += deltaX * rotationFactor * 0.01;
+          this.el.object3D.rotation.x += deltaY * rotationFactor * 0.01;
+
+          this.lastRotationX = event.touches[0].clientX;
+          this.lastRotationY = event.touches[0].clientY;
+        },
+        handlePinch: function (event) {
+          const dx = event.touches[0].clientX - event.touches[1].clientX;
+          const dy = event.touches[0].clientY - event.touches[1].clientY;
+          const distance = Math.sqrt(dx * dx + dy * dy);
+
+          if (!this.initialDistance) {
+            this.initialDistance = distance;
+          } else {
+            const scaleFactor = distance / this.initialDistance;
+            const newScale = Math.min(Math.max(this.el.object3D.scale.x * scaleFactor, this.data.minScale), this.data.maxScale);
+            this.el.object3D.scale.set(newScale, newScale, newScale);
+            this.initialDistance = distance;
+          }
+        },
+        handleTouchStart: function (event) {
+          if (event.touches.length === 1) {
+            this.lastRotationX = event.touches[0].clientX;
+            this.lastRotationY = event.touches[0].clientY;
+          } else if (event.touches.length === 2) {
+            this.initialDistance = null;
+          }
+        },
+        handleTouchEnd: function () {
+          this.initialDistance = null;
+        }
+      });
+
+      document.querySelector('#model').setAttribute('gesture-handler', '');
+    </script>
+    
+  <canvas class="a-canvas" data-aframe-canvas="true" data-engine="three.js r158" width="1920" height="321"></canvas><div class="a-loader-title" style="display: none;"></div><div class="a-enter-vr fullscreen" aframe-injected=""><button class="a-enter-vr-button" title="Enter VR mode with a headset or fullscreen without" aframe-injected=""></button></div><div class="a-orientation-modal a-hidden" aframe-injected=""><button aframe-injected="">Exit VR</button></div><a-entity light="" data-aframe-default-light="" aframe-injected=""></a-entity><a-entity light="" position="" data-aframe-default-light="" aframe-injected=""></a-entity></a-scene>
+
+<div class="mindar-ui-overlay mindar-ui-loading hidden">
+<div class="loader">
+</div></div>
+</div>
+</div></div><video autoplay="" muted="" playsinline="" width="640" height="480" style="position: absolute; top: -373px; left: 0px; z-index: -2; width: 1280px; height: 960px;"></video></body></html>
